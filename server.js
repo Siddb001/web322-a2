@@ -14,36 +14,58 @@ const express = require("express");
 const projectData = require("./modules/projects");
 
 const app = express();
-const PORT = process.env.PORT || 8080; // Vercel uses process.env.PORT
+const PORT = process.env.PORT || 8080;
 
-// Routes
+/* ---------- Ensure data is initialized (works locally & on Vercel) ---------- */
+let initialized = false;
+const initPromise = projectData.initialize()
+  .then(() => { initialized = true; })
+  .catch((err) => {
+    console.error("Failed to initialize:", err);
+    // keep promise rejected so requests can report a failure
+    throw err;
+  });
+
+// Middleware: wait for initialization before handling any route
+app.use(async (req, res, next) => {
+  if (!initialized) {
+    try {
+      await initPromise;
+    } catch (e) {
+      return res.status(500).send("Initialization failed.");
+    }
+  }
+  next();
+});
+
+/* ---------------------------------- Routes --------------------------------- */
 app.get("/", (req, res) => {
-  res.send("Assignment 1:Siddhant Bisht - 190872234");
+  res.send("Assignment 1: Siddhant Bisht - 190872234");
 });
 
 app.get("/solutions/projects", (req, res) => {
   projectData.getAllProjects()
     .then((data) => res.json(data))
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(500).send(err));
 });
 
 app.get("/solutions/projects/id-demo", (req, res) => {
-  projectData.getProjectById(9) // Example ID
+  projectData.getProjectById(9)
     .then((data) => res.json(data))
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(404).send(err));
 });
 
 app.get("/solutions/projects/sector-demo", (req, res) => {
-  projectData.getProjectsBySector("agriculture") // Example sector
+  projectData.getProjectsBySector("agriculture")
     .then((data) => res.json(data))
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(404).send(err));
 });
 
-// Start server after initialization
-projectData.initialize().then(() => {
+/* --------- Local dev: listen; Vercel: export the app (no listen) ----------- */
+if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
-}).catch((err) => {
-  console.log("Failed to initialize:", err);
-});
+}
+
+module.exports = app;
