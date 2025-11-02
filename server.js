@@ -17,8 +17,11 @@ const projectData = require("./modules/projects");
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-/* ------------------------ Static assets (Tailwind CSS) ---------------------- */
-app.use(express.static("public")); // serves /css/main.css, images, etc
+/* ------------------------ Static assets (CSS / images) --------------------- */
+/* IMPORTANT: mount explicit static paths so Vercel serves /css/main.css, etc. */
+app.use("/css", express.static(path.join(__dirname, "public", "css")));
+app.use("/img", express.static(path.join(__dirname, "public", "img")));
+app.use(express.static(path.join(__dirname, "public"))); // fallback for /favicon, etc.
 
 /* ----------------------------- View engine: EJS ----------------------------- */
 app.set("view engine", "ejs");
@@ -47,8 +50,6 @@ app.get("/", (_req, res) => res.render("home"));
 app.get("/about", (_req, res) => res.render("about"));
 
 /* ---------------------------- Project list (Step 6) ------------------------- */
-/* Renders views/projects.ejs with projects data (table).
-   NOTE: we pass { sector } so your badge & "Clear" link in the EJS can show. */
 app.get("/solutions/projects", async (req, res) => {
   try {
     const { sector } = req.query;
@@ -57,13 +58,12 @@ app.get("/solutions/projects", async (req, res) => {
       : await projectData.getAllProjects();
 
     return res.render("projects", { projects, sector });
-  } catch (err) {
+  } catch (_err) {
     return res.status(404).render("projects", { projects: [], sector: req.query.sector || "" });
   }
 });
 
 /* ---------------------------- Single project (Step 7) ----------------------- */
-/* Renders views/project.ejs for a single project's details + random quote. */
 app.get("/solutions/projects/:id", async (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -72,7 +72,7 @@ app.get("/solutions/projects/:id", async (req, res) => {
       return res.status(404).render("404", { message: `No project with id ${id}` });
     }
     return res.render("project", { project });
-  } catch (err) {
+  } catch (_err) {
     return res.status(404).render("404", { message: "Error fetching project" });
   }
 });
