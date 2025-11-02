@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="en" data-theme="dim"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects – Climate Solutions</title><link rel="stylesheet" href="/css/main.css">
+</head><body>
+  <%- include('partials/navbar', { page: '/solutions/projects' }) %>
+  <div class="container mx-auto p-4">
+    <div class="hero bg-base-200 rounded-2xl mb-6"><div class="hero-content text-center"><div>
+      <h1 class="text-4xl font-bold mb-2">Projects</h1>
+      <p class="mb-4">Browse all projects or filter by sector.</p>
+      <div class="join">
+        <a class="btn join-item" href="/solutions/projects?sector=energy">Energy</a>
+        <a class="btn join-item" href="/solutions/projects?sector=industry">Industry</a>
+        <a class="btn join-item" href="/solutions/projects?sector=transportation">Transportation</a>
+      </div>
+    </div></div></div>
+
+    <div class="overflow-x-auto">
+      <table class="table">
+        <thead><tr><th>Title</th><th>Sector</th><th>Summary</th><th></th></tr></thead>
+        <tbody>
+          <% (projects || []).forEach(p => { %>
+            <tr>
+              <td><%= p.title %></td>
+              <td><a class="btn btn-sm" href="/solutions/projects?sector=<%= encodeURIComponent(p.sector) %>"><%= p.sector %></a></td>
+              <td><%= p.summary_short %></td>
+              <td><a class="btn btn-sm btn-primary" href="/solutions/projects/<%= p.id %>">Details</a></td>
+            </tr>
+          <% }) %>
+          <% if (!projects || projects.length === 0) { %>
+            <tr><td colspan="4" class="text-center">No projects found.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body></html>

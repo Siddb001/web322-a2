@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dim">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= project.title %> – Climate Solutions</title>
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+  <%- include('partials/navbar', { page: '' }) %>
+
+  <main class="container mx-auto p-4 prose">
+    <h1 class="mb-2"><%= project.title %></h1>
+
+    <% if (project.feature_img_url) { %>
+      <img class="rounded-xl" src="<%= project.feature_img_url %>" alt="<%= project.title %>" />
+    <% } %>
+
+    <% if (project.intro_short) { %><p><%= project.intro_short %></p><% } %>
+    <% if (project.impact)      { %><p><strong>Impact:</strong> <%= project.impact %></p><% } %>
+
+    <div class="mt-4 flex gap-2">
+      <% if (project.original_source_url) { %>
+        <a class="btn btn-primary" href="<%= project.original_source_url %>" target="_blank" rel="noopener">Learn More</a>
+      <% } %>
+      <a class="btn" href="/solutions/projects">Back to Projects</a>
+    </div>
+
+    <blockquote id="quoteBox" class="italic mt-8"></blockquote>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      fetch("https://dummyjson.com/quotes/random")
+        .then(r => r.json())
+        .then(d => {
+          const el = document.getElementById("quoteBox");
+          if (d && d.quote) el.textContent = `"${d.quote}" — ${d.author || "Unknown"}`;
+        })
+        .catch(() => {});
+    });
+  </script>
+</body>
+</html>

@@ -1,5 +1,21 @@
 {
+  "name": "web322-a2",
+  "version": "1.0.0",
+  "description": "WEB322 Assignment 2 - Tailwind, EJS, and Express setup",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "tw:build": "node ./node_modules/tailwindcss/lib/cli.js -i ./public/css/tailwind.css -o ./public/css/main.css --watch"
+  },
   "dependencies": {
+    "ejs": "^3.1.10",
     "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.15",
+    "autoprefixer": "^10.4.20",
+    "daisyui": "^4.12.10",
+    "postcss": "^8.4.38",
+    "tailwindcss": "3.4.14"
   }
 }
