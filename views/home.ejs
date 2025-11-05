@@ -1,18 +1,10 @@
+<!DOCTYPE html>
 <html lang="en" data-theme="dim">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Climate Solutions – Home</title>
   <link rel="stylesheet" href="/css/main.css?v=<%= Date.now() %>">
-  <title>...</title>
-</head>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Climate Solutions</title>
-  <link rel="stylesheet" href="/css/main.css" />
 </head>
 <body class="bg-base-100">
 
@@ -49,40 +41,31 @@
     </div>
   </div>
 
-  <!-- Cards Grid -->
+  <!-- Dynamic Project Cards -->
   <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 my-8 px-4">
-    <div class="card bg-base-100 shadow-xl">
-      <figure><img src="https://placehold.co/400x200" alt="Project 1" /></figure>
-      <div class="card-body">
-        <h2 class="card-title">Project 1</h2>
-        <p>Short summary about project 1.</p>
-        <div class="card-actions justify-end">
-          <a href="/solutions/projects/1" class="btn btn-primary">Details</a>
+    <% if (projects && projects.length > 0) { %>
+      <% projects.forEach(p => { %>
+        <div class="card bg-base-100 shadow-xl">
+          <figure>
+            <img 
+              src="<%= p.image || p.feature_img_url || '/images/project-1.jpg' %>" 
+              alt="<%= p.title %>" 
+              class="w-full h-48 object-cover" 
+              onerror="this.src='https://placehold.co/400x200?text=No+Image';" 
+            />
+          </figure>
+          <div class="card-body">
+            <h2 class="card-title"><%= p.title %></h2>
+            <p><%= p.summary_short %></p>
+            <div class="card-actions justify-end">
+              <a href="/solutions/projects/<%= p.id %>" class="btn btn-primary">Details</a>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-
-    <div class="card bg-base-100 shadow-xl">
-      <figure><img src="https://placehold.co/400x200" alt="Project 2" /></figure>
-      <div class="card-body">
-        <h2 class="card-title">Project 2</h2>
-        <p>Short summary about project 2.</p>
-        <div class="card-actions justify-end">
-          <a href="/solutions/projects/2" class="btn btn-primary">Details</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="card bg-base-100 shadow-xl">
-      <figure><img src="https://placehold.co/400x200" alt="Project 3" /></figure>
-      <div class="card-body">
-        <h2 class="card-title">Project 3</h2>
-        <p>Short summary about project 3.</p>
-        <div class="card-actions justify-end">
-          <a href="/solutions/projects/3" class="btn btn-primary">Details</a>
-        </div>
-      </div>
-    </div>
+      <% }) %>
+    <% } else { %>
+      <p class="text-center w-full">No projects available.</p>
+    <% } %>
   </div>
 
 </body>

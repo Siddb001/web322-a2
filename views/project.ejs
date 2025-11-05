@@ -1,40 +1,57 @@
-<html lang="en" data-theme="dim">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="/css/main.css?v=<%= Date.now() %>">
-  <title>...</title>
-</head>
-
 <!DOCTYPE html>
 <html lang="en" data-theme="dim">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><%= project.title %> – Climate Solutions</title>
-  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/main.css?v=<%= Date.now() %>" />
 </head>
-<body>
-  <%- include('partials/navbar', { page: '' }) %>
+<body class="bg-base-100 text-base-content">
+  <%- include('partials/navbar', { page: '/solutions/projects' }) %>
 
-  <main class="container mx-auto p-4 prose">
-    <h1 class="mb-2"><%= project.title %></h1>
+  <main class="container mx-auto px-4 py-8">
+    <!-- Project Title -->
+    <h1 class="text-4xl font-bold mb-2 text-center"><%= project.title %></h1>
 
+    <!-- Project Image -->
     <% if (project.feature_img_url) { %>
-      <img class="rounded-xl" src="<%= project.feature_img_url %>" alt="<%= project.title %>" />
+      <div class="flex justify-center mb-8">
+        <img src="<%= project.feature_img_url %>" alt="<%= project.title %>"
+             class="rounded-2xl shadow-lg w-full max-w-3xl object-cover" />
+      </div>
     <% } %>
 
-    <% if (project.intro_short) { %><p><%= project.intro_short %></p><% } %>
-    <% if (project.impact)      { %><p><strong>Impact:</strong> <%= project.impact %></p><% } %>
+    <!-- Summary -->
+    <section class="prose mx-auto mb-8">
+      <p class="text-lg leading-relaxed"><%= project.summary_short %></p>
+    </section>
 
-    <div class="mt-4 flex gap-2">
+    <!-- Impact Highlights -->
+    <section class="bg-base-200 p-6 rounded-2xl shadow-inner mb-10">
+      <h2 class="text-2xl font-semibold mb-4">Why This Project Matters</h2>
+      <ul class="list-disc list-inside space-y-2 text-base">
+        <li>Supports sustainable development and long-term environmental goals.</li>
+        <li>Contributes to carbon reduction and climate resilience worldwide.</li>
+        <li>Provides local and global economic opportunities for communities.</li>
+        <li>Encourages innovation through renewable and eco-friendly solutions.</li>
+        <li>Helps nations meet United Nations Sustainable Development Goals (SDGs).</li>
+      </ul>
+    </section>
+
+    <!-- External Links -->
+    <div class="flex justify-center gap-4 mb-10">
       <% if (project.original_source_url) { %>
-        <a class="btn btn-primary" href="<%= project.original_source_url %>" target="_blank" rel="noopener">Learn More</a>
+        <a class="btn btn-primary" href="<%= project.original_source_url %>" target="_blank" rel="noopener">
+          Learn More
+        </a>
       <% } %>
-      <a class="btn" href="/solutions/projects">Back to Projects</a>
+      <a class="btn btn-outline" href="/solutions/projects">← Back to Projects</a>
     </div>
 
-    <blockquote id="quoteBox" class="italic mt-8"></blockquote>
+    <!-- Random Climate Quote -->
+    <section class="text-center mt-8">
+      <blockquote id="quoteBox" class="italic text-lg font-medium text-gray-600"></blockquote>
+    </section>
   </main>
 
   <script>

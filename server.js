@@ -18,14 +18,18 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 /* ------------------------ Static assets (CSS / images) --------------------- */
-/* IMPORTANT: mount explicit static paths so Vercel serves /css/main.css, etc. */
+// Serve Tailwind build
 app.use("/css", express.static(path.join(__dirname, "public", "css")));
+// Serve images under /images (your files live here)
+app.use("/images", express.static(path.join(__dirname, "public", "images")));
+// Optional legacy alias if you referenced /img somewhere
 app.use("/img", express.static(path.join(__dirname, "public", "img")));
-app.use(express.static(path.join(__dirname, "public"))); // fallback for /favicon, etc.
+// Fallback for any other files in /public (e.g., favicon)
+app.use(express.static(path.join(__dirname, "public")));
 
 /* ----------------------------- View engine: EJS ----------------------------- */
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views")); // explicit for Vercel/local
+app.set("views", path.join(__dirname, "views"));
 
 /* ---------------------------- Data initialization --------------------------- */
 let initialized = false;
@@ -46,7 +50,17 @@ app.use(async (_req, res, next) => {
 });
 
 /* --------------------------------- Views ----------------------------------- */
-app.get("/", (_req, res) => res.render("home"));
+// Home: show 6 featured projects
+app.get("/", async (_req, res) => {
+  try {
+    const all = await projectData.getAllProjects();
+    const featured = all.slice(0, 6); // first six
+    return res.render("home", { projects: featured });
+  } catch {
+    return res.render("home", { projects: [] });
+  }
+});
+
 app.get("/about", (_req, res) => res.render("about"));
 
 /* ---------------------------- Project list (Step 6) ------------------------- */
@@ -59,7 +73,9 @@ app.get("/solutions/projects", async (req, res) => {
 
     return res.render("projects", { projects, sector });
   } catch (_err) {
-    return res.status(404).render("projects", { projects: [], sector: req.query.sector || "" });
+    return res
+      .status(404)
+      .render("projects", { projects: [], sector: req.query.sector || "" });
   }
 });
 
